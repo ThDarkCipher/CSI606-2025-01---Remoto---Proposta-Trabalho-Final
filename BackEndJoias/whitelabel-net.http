@@ -1,0 +1,6 @@
+@whitelabel_net_HostAddress = http://localhost:5059
+
+GET {{whitelabel_net_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
