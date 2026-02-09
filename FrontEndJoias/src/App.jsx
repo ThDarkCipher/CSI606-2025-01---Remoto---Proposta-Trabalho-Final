@@ -9,7 +9,7 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path='/' element={<h1 className='bg-red-100 text-center font-bold'>Eu amo meu Homem divino</h1>} />
+        <Route path='/' element={<h1 className='bg-red-100 text-center font-bold'>Homepage</h1>} />
         <Route path='/about' element={<h1>Divino case comigo ?</h1>} />
         <Route path='/contact' element={<h1>S ou N ?</h1>} />
         <Route path='/login' element={<Login />} />
