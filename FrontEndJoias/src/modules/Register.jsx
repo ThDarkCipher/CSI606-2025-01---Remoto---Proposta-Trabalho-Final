@@ -28,7 +28,7 @@ export const Register = () => {
 
     try{
       //Criando a tenancy primeiro, para garantir que o usuário seja criado dentro dela
-      await axios.post("http://localhost:5059/api/Tenancies/create", {
+      await axios.post("http://localhost:5059/api/Tenancies", {
         name: tenancy
       });
       // Criando o usuário dentro da tenancy criada
