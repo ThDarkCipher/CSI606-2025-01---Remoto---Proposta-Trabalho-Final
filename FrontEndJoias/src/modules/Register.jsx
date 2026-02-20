@@ -18,7 +18,7 @@ export const Register = () => {
     e.preventDefault();
     setError("");
 
-    // Validação rápida para ver se o usuário não digitou a senha errado
+    // Validação basica
     if (password !== confirmPassword) {
       setError("As senhas não coincidem!");
       return;
@@ -26,20 +26,24 @@ export const Register = () => {
 
     setLoading(true);
 
-    try {
-      // ⚠️ A rota e as variáveis baseadas exatamente no seu C#
+    try{
+      //Criando a tenancy primeiro, para garantir que o usuário seja criado dentro dela
+      await axios.post("http://localhost:5059/api/Tenancies/create", {
+        name: tenancy
+      });
+      // Criando o usuário dentro da tenancy criada
       await axios.post("http://localhost:5059/api/Users/create", {
         userName: userName,
         password: password,
         tenancy: tenancy
       });
 
-      alert("Conta criada com sucesso! Faça login para entrar no sistema.");
+      alert("Conta e empresa criada com sucesso! Faça login para entrar no sistema.");
       navigate("/login"); // Manda de volta pro login
 
     } catch (err) {
-      setError("Erro ao criar usuário. Verifique se a API está rodando.");
-      console.error(err);
+      setError("Erro ao criar conta. Verifique os dados ou se a empresa já existe.");
+      console.error("Erro detalhado: ", err);
     } finally {
       setLoading(false);
     }
