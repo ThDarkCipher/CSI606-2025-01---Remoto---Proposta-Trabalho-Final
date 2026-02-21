@@ -188,54 +188,6 @@ namespace GemaGestor.Controllers
             }
             return Unauthorized(new { message = "2FA Code incorreto" });
         }
-        [HttpPost("register-tenancy")]
-        [AllowAnonymous] // Libera a rota para quem não está logado!
-        [SwaggerOperation(Summary = "Registers a new Tenancy and its Admin user at the same time.")]
-        public async Task<IActionResult> RegisterTenancy(RegisterTenancyDTO request)
-        {
-            if (string.IsNullOrEmpty(request.TenancyName) || string.IsNullOrEmpty(request.UserName) || string.IsNullOrEmpty(request.Password))
-            {
-                return BadRequest(new { message = "Nome da empresa, usuário e senha são obrigatórios" });
-            }
-
-            // 1. Verifica se a Joalheria já existe
-            var tenancyExists = await _context.Tenancy.AnyAsync(t => t.Name == request.TenancyName);
-            if (tenancyExists)
-            {
-                return Conflict(new { message = "Já existe uma joalheria com este nome" });
-            }
-
-            // 2. Verifica se o Usuário já existe
-            var userExists = await UserManager.FindByNameAsync(request.UserName);
-            if (userExists != null)
-            {
-                return Conflict(new { message = "Nome de usuário já está em uso" });
-            }
-
-            // 3. Cria a Joalheria
-            var newTenancy = new Tenancy { Name = request.TenancyName };
-            _context.Tenancy.Add(newTenancy);
-            await _context.SaveChangesAsync(); // Salva para gerar o ID da empresa no banco
-
-            // 4. Cria o Usuário
-            var newUser = new User(request.UserName, request.Email);
-            var result = await UserManager.CreateAsync(newUser, request.Password);
-
-            if (!result.Succeeded)
-            {
-                // Se a senha for fraca e der erro, a gente apaga a joalheria que acabou de criar pra não sujar o banco!
-                _context.Tenancy.Remove(newTenancy);
-                await _context.SaveChangesAsync();
-                return BadRequest(new { message = "Senha não corresponde aos requisitos de segurança (Use maiúsculas, números e símbolos)" });
-            }
-
-            // 5. Amarra o Usuário na Joalheria e dá o cargo de Chefe (Admin)
-            newUser.Tenancy = newTenancy;
-            await UserManager.AddToRoleAsync(newUser, "Admin");
-            await _context.SaveChangesAsync();
-
-            return Ok(new { message = "Joalheria e Conta Admin criadas com sucesso!" });
-        }
 
         [Authorize]
         [HttpGet("refresh-token")]
