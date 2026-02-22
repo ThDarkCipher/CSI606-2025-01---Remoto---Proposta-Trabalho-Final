@@ -7,7 +7,7 @@ import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "
 import { FaRegUserCircle } from "react-icons/fa";
 import { RiLockPasswordLine } from "react-icons/ri";
 import { Button } from "../ui/button";
-import { useAuth } from "@/providers/AuthContext";
+//import { useAuth } from "@/providers/AuthContext";
 import { FaRegBuilding } from "react-icons/fa6";
 import { Spinner } from "../ui/spinner";
 
@@ -18,7 +18,6 @@ export const SignUpForm = () => {
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
