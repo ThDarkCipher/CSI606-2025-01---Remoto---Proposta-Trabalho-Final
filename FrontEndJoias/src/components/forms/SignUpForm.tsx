@@ -11,7 +11,7 @@ import { useAuth } from "@/providers/AuthContext";
 import { FaRegBuilding } from "react-icons/fa6";
 import { Spinner } from "../ui/spinner";
 
-export const SingUpForm = () => {
+export const SignUpForm = () => {
   const [tenancyName, setTenancyName] = useState("");
   const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
@@ -24,7 +24,7 @@ export const SingUpForm = () => {
 
   const navigate = useNavigate();
 
-  const handleSingUp = () => {
+  const handleSignUp = () => {
     if (password === passwordConfirm) {
       setLoading(true);
       const payload = {
@@ -54,7 +54,7 @@ export const SingUpForm = () => {
       <h1 className="text-3xl font-bold text-center mb-6 dark:text-blue-400 text-blue-500">Criar Conta 💎</h1>
       <p className="dark:text-gray-400 text-gray-900 text-center mb-6 text-sm">Cadastre-se para gerencia suas gemas</p>
 
-      <form onSubmit={handleSingUp} className="flex flex-col gap-4">
+      <form onSubmit={handleSignUp} className="flex flex-col gap-4">
 
         {error && <p className="text-red-500 text-center text-sm bg-red-900/20 p-2 rounded">{error}</p>}
 
