@@ -42,6 +42,7 @@ export const LoginForm = () => {
     <div className="w-full max-w-md dark:bg-gray-800 bg-gray-200 p-8 rounded-lg shadow-lg border border-gray-700">
 
       <h1 className="text-3xl font-bold text-center mb-6 dark:text-blue-400 text-blue-500">GemaGestor 💎</h1>
+      <p className="dark:text-gray-400 text-gray-900 text-center mb-6 text-sm">Faça login e comece a gerenciar suas gemas</p>
 
       <form onSubmit={handleLogin} className="flex flex-col gap-4">
 

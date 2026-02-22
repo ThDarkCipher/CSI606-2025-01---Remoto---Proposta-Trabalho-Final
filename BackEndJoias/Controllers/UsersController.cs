@@ -160,9 +160,11 @@ namespace GemaGestor.Controllers
             if(user.TwoFactorEnabled) {
                 return Accepted(new { message = "Necessária confirmação 2FA" });
             }
+            UserDTO userResponse = new UserDTO(user.Id, user.UserName, user.Email);
+            userResponse.Roles = new List<string>(await UserManager.GetRolesAsync(user));
             return Ok(JwtService.IsLongTermToken() ?
-                new { message = "Usuário logado com sucesso", token = JwtService.GenerateJWT(user, await UserManager.GetRolesAsync(user)), longtermtoken = JwtService.GenerateJWT(user, await UserManager.GetRolesAsync(user), 1440) } :
-                new { message = "Usuário logado com sucesso", token = JwtService.GenerateJWT(user, await UserManager.GetRolesAsync(user)) }
+                new { message = "Usuário logado com sucesso",user = userResponse, token = JwtService.GenerateJWT(user, await UserManager.GetRolesAsync(user)), longtermtoken = JwtService.GenerateJWT(user, await UserManager.GetRolesAsync(user), 1440) } :
+                new { message = "Usuário logado com sucesso",user = userResponse, token = JwtService.GenerateJWT(user, await UserManager.GetRolesAsync(user)) }
             );
         }
 

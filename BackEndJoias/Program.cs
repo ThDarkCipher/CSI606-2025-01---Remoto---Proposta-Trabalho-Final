@@ -45,7 +45,7 @@ builder.Services.AddScoped<OTPService>();
 
 builder.Services.AddControllers()
     .AddJsonOptions(options => {
-        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
+        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
     });
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
@@ -81,6 +81,8 @@ if(app.Environment.IsDevelopment()) {
     app.UseSwaggerUI();
 }
 
+app.UseCors("FullCors");
+
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
@@ -88,8 +90,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
-app.UseCors("FullCors");
 
 IdentitySeeder.SeedRolesAndAdminAsync(app.Services.CreateScope().ServiceProvider.GetRequiredService<RoleManager<Role>>(), app.Services.CreateScope().ServiceProvider.GetRequiredService<UserManager<User>>()).Wait();
 

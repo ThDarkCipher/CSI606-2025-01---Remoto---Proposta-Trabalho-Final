@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from './providers/ThemeProvider';
 import { Login } from './modules/Login';
+import { SingUp } from './modules/SingUp';
 import { Dashboard } from './modules/Dashboard';
 import { AuthProvider } from './providers/AuthContext';
 import PrivateRoute from './providers/PriveteRoute';
@@ -13,6 +14,7 @@ function App() {
         <Router>
           <Routes>
             <Route path='/' element={<Login />} />
+            <Route path='/register' element={<SingUp />} />
             <Route element={<PrivateRoute />}>
               <Route path='/dashboard' element={<Dashboard />} />
             </Route>
