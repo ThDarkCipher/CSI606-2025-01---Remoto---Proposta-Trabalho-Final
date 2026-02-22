@@ -7,12 +7,15 @@ import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "
 import { FaRegUserCircle } from "react-icons/fa";
 import { RiLockPasswordLine } from "react-icons/ri";
 import { Button } from "../ui/button";
+import { useAuth } from "@/providers/AuthContext";
 
 export const LoginForm = () => {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
+  
+  const {login} = useAuth();
 
   const navigate = useNavigate();
 
@@ -24,8 +27,9 @@ export const LoginForm = () => {
     }
     axios.post(`${import.meta.env.VITE_APP_API_HOST}/Users/login`, payload)
       .then((response) => {
-        sessionStorage.setItem("token", response.data?.longtermtoken);
+        //sessionStorage.setItem("token", response.data?.longtermtoken);
         console.log(response)
+        login(response.data?.longtermtoken, response.data?.user);
         navigate("/dashboard");
       })
       .catch((response) => {
