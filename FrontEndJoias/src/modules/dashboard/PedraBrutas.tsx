@@ -32,26 +32,26 @@ export function PedrasBrutas() {
     dataAquisicao: new Date().toISOString().split('T')[0]
   });
 
-  useEffect(() => {
-    const fetchPedras = () => {
-      if (!token) return;
+  const fetchPedras = () => {
+    if (!token) return;
+    console.log("Atualizando Pedras")
+    axios.get(`${import.meta.env.VITE_APP_API_HOST}/Brutas`, {
+      headers: { Authorization: `Bearer ${token}` }
 
-      axios.get(`${import.meta.env.VITE_APP_API_HOST}/Brutas`, {
-        headers: { Authorization: `Bearer ${token}` }
-
+    })
+      .then((response) => {
+        // Back-end pode devolver um array direto ou um objeto, ajustadado aqui
+        setPedras(response.data);
+        setLoading(false);
       })
-        .then((response) => {
-          // Back-end pode devolver um array direto ou um objeto, ajustadado aqui
-          setPedras(response.data);
-          setLoading(false);
-        })
-        .catch((error) => {
-          console.error("Erro ao buscar pedras brutas:", error);
-          setLoading(false);
-        });
-    }
+      .catch((error) => {
+        console.error("Erro ao buscar pedras brutas:", error);
+        setLoading(false);
+      });
+  }
+  useEffect(() => {
     fetchPedras();
-  }, [token]);
+  }, []);
 
   const handleCreate = (e: React.FormEvent) => {
     e.preventDefault();
@@ -66,7 +66,8 @@ export function PedrasBrutas() {
     axios.post(`${import.meta.env.VITE_APP_API_HOST}/Brutas`, payload, {
       headers: { Authorization: `Bearer ${token}` }
     })
-      .then(() => {
+    .then(() => {
+        window.location.reload()
         setIsDialogOpen(false); // Fecha o Dialog ao invés da Gaveta
         setFormData({ nome: "", peso: "", valorInicial: "", descricao: "", regiao: "", dataAquisicao: new Date().toISOString().split('T')[0] });
       })
