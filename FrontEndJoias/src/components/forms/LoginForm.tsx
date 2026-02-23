@@ -8,18 +8,21 @@ import { FaRegUserCircle } from "react-icons/fa";
 import { RiLockPasswordLine } from "react-icons/ri";
 import { Button } from "../ui/button";
 import { useAuth } from "@/providers/AuthContext";
+import { Spinner } from "../ui/spinner";
 
 export const LoginForm = () => {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false)
   
   const {login} = useAuth();
 
   const navigate = useNavigate();
 
   const handleLogin = (e: React.FormEvent) => {
+    setLoading(true)
     e.preventDefault();
     const payload = {
       "userName": userName,
@@ -97,9 +100,16 @@ export const LoginForm = () => {
         {/* Botão Entrar */}
         <Button
           type="submit"
+          disabled={loading}
           className="w-full mt-4 bg-blue-600 hover:bg-blue-800 text-white font-bold py-2 px-4 cursor-pointer"
         >
-          Entrar
+        {loading ?
+            <>
+              <Spinner data-icon="inline-start" />
+              Entrando...
+            </> :
+            "Entrar"
+          }
         </Button>
       </form >
 

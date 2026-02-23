@@ -61,6 +61,7 @@ export function PedrasBrutas() {
       peso: parseFloat(formData.peso),
       valorInicial: parseFloat(formData.valorInicial)
     };
+    payload.dataAquisicao += "T00:00:00Z"
 
     axios.post(`${import.meta.env.VITE_APP_API_HOST}/Brutas`, payload, {
       headers: { Authorization: `Bearer ${token}` }
