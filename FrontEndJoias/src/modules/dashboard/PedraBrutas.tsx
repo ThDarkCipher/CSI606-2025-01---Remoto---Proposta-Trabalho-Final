@@ -1,11 +1,11 @@
 import { Button } from "@/components/ui/button";
-import { DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAuth } from "@/providers/AuthContext";
 import axios from "axios";
 import { Gem, Plus, Trash2 } from "lucide-react";
-import { Dialog, Label } from "radix-ui";
 import { useEffect, useState } from "react";
 
 interface PedraBruta {
@@ -96,7 +96,7 @@ export function PedrasBrutas() {
         </div>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
-            <Button className="bg-purple-600 hover:bg-purple-700 text-white gap-2 cursor-pointer">
+            <Button className="bg-purple-600 hover:bg-purple-700 text-white gap-2 cursor-pointer mr-18">
               <Plus size={18} /> Nova Pedra
             </Button>
           </DialogTrigger>

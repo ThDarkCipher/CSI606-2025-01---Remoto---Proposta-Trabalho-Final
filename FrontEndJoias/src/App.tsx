@@ -8,6 +8,8 @@ import PrivateRoute from './providers/PrivateRoute';
 import { TenancyCreate } from './modules/dashboard/TenancyCreate';
 import { Overview } from './modules/dashboard/Overview';
 import { PedrasBrutas } from './modules/dashboard/PedraBrutas';
+import { Lotes } from './modules/dashboard/Lotes';
+import { Financeiro } from './modules/dashboard/Financeiro';
 
 function App() {
   return (
@@ -23,8 +25,8 @@ function App() {
                 <Route index element={<Overview />} />
                 {/* Rotas filhas */}
                 <Route path='pedras-brutas' element={<PedrasBrutas />} />
-                <Route path='lotes' element={<div>📦 Tela de Lotes (Cards vão aqui)</div>} />
-                <Route path='financeiro' element={<div>💰 Tela do Financeiro</div>} />
+                <Route path='lotes' element={<Lotes />} />
+                <Route path='financeiro' element={<Financeiro/>} />
               </Route>
             </Route>
             <Route element={<PrivateRoute hasRoles={["Admin"]} />}>
