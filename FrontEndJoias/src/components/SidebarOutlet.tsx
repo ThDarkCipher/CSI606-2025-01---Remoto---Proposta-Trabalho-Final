@@ -1,10 +1,9 @@
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
-import ThemeSelector from "../components/theme/ThemeSelector";
 import { useAuth } from "@/providers/AuthContext";
 import { AppSidebar } from "./AppSidebar";
 import { Outlet } from "react-router-dom";
 
-export const DashboardComponents = () => {
+export const SidebarOutlet = () => {
   const { user } = useAuth();
 
   return (
@@ -15,7 +14,6 @@ export const DashboardComponents = () => {
         <div className="p-6">
           <Outlet /> 
         </div>
-
       </main>
     </SidebarProvider>
   )

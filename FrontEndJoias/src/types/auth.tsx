@@ -3,6 +3,12 @@ export type User = {
   userName: string;
   email: string | null;
   roles: string[];
+  tenancy: Tenancy | null;
+}
+export type Tenancy = {
+  id: number;
+  name: string;
+  cnpj: string;
 }
 
 export type AuthContextType = {

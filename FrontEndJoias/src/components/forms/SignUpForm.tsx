@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
@@ -23,21 +23,24 @@ export const SignUpForm = () => {
 
   const navigate = useNavigate();
 
-  const handleSignUp = () => {
+  const handleSignUp = (e: React.FormEvent) => {
+    e.preventDefault();
     if (password === passwordConfirm) {
       setLoading(true);
       const payload = {
-        "tenancyName": tenancyName,
+        "tenancy": tenancyName,
         "userName": userName,
         "email": email,
         "password": password
       }
       axios.post(`${import.meta.env.VITE_APP_API_HOST}/Users/create`, payload)
         .then((response) => {
+          console.log(response)
           alert(response.data?.message);
           navigate("/"); //Joga o usuário de volta pro Login
         })
         .catch((error) => {
+          console.log(error)
           alert(error.response?.data?.message || "Erro ao cadastrar");
         })
     }
@@ -147,11 +150,11 @@ export const SignUpForm = () => {
         >
           {loading ?
             <>
-              <Spinner data-icon="inline-start" /> 
+              <Spinner data-icon="inline-start" />
               Cadastrando...
             </> :
             "Cadastrar"
-        }
+          }
         </Button>
       </form >
 

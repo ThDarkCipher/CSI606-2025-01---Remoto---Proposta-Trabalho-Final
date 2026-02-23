@@ -8,6 +8,7 @@ import { FaRegBuilding } from "react-icons/fa";
 import { Button } from "../ui/button";
 import { Spinner } from "../ui/spinner";
 import { HiOutlineIdentification } from "react-icons/hi";
+import { useAuth } from "@/providers/AuthContext";
 
 export const TenancyForm = () => {
   const [tenancyName, setTenancyName] = useState<string>("");
@@ -16,15 +17,21 @@ export const TenancyForm = () => {
   const [error, setError] = useState("");
 
   const navigate = useNavigate();
+  
+  const { token } = useAuth();
+  
 
   const handleTenancyCreate = () => {
     if (cnpj.isValid(tenancyCnpj)) {
       setLoading(true);
       const payload = {
-        "tenancyName": tenancyName,
-        "tenancyCnpj": tenancyCnpj
+        "name": tenancyName,
+        "cnpj": tenancyCnpj
       }
-      axios.post(`${import.meta.env.VITE_APP_API_HOST}/Tenancy`, payload)
+      const header = {
+        Authorization:`Bearer ${token}`
+      }
+      axios.post(`${import.meta.env.VITE_APP_API_HOST}/Tenancies`, payload, {headers: header})
         .then((response) => {
           alert(response.data?.message);
           navigate("/dashboard")
@@ -75,7 +82,7 @@ export const TenancyForm = () => {
               <InputGroupInput
                 className="w-full  dark:text-white text-gray-900"
                 placeholder="Cnpj da Empresa"
-                value={tenancyCnpj}
+                value={cnpj.format(tenancyCnpj)}
                 onChange={(e) => setTenancyCnpj(e.target.value)}
                 type="text"
               />

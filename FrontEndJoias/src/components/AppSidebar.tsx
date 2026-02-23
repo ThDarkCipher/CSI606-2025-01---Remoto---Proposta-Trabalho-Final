@@ -58,7 +58,7 @@ export function AppSidebar() {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
-              {isAdmin && (
+              {/* {isAdmin && (
                 <SidebarMenuItem className="mt-4 border-t border-gray-700 pt-2">
                   <SidebarMenuButton asChild>
                     <a href="#" className="dark:text-gray-200 text-gray-900">
@@ -67,11 +67,21 @@ export function AppSidebar() {
                     </a>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
+              )} */}
+              {isAdmin && user?.tenancy == null && (
+                <SidebarMenuItem className="mt-4 border-t border-gray-700 pt-2">
+                  <SidebarMenuButton asChild>
+                    <Link to="/tenancy/create" className="dark:text-gray-200 text-gray-900">
+                      <Settings />
+                      <span>Criar Empresa</span>
+                    </Link >
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
               )}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-      </SidebarContent>
-    </Sidebar>
+          </SidebarMenu>
+        </SidebarGroupContent>
+      </SidebarGroup>
+    </SidebarContent>
+    </Sidebar >
   )
 }

@@ -46,7 +46,7 @@ namespace GemaGestor.Controllers
                 usersList = await _context.User.ToListAsync();
             }
             foreach(var user in usersList) {
-                UserDTO tempUser = new UserDTO(user.Id, user.UserName, user.Email);
+                UserDTO tempUser = new UserDTO(user.Id, user.UserName, user.Email, user.Tenancy);
                 tempUser.Roles = new List<string>(await UserManager.GetRolesAsync(user));
                 users.Add(tempUser);
             }
@@ -114,7 +114,7 @@ namespace GemaGestor.Controllers
                 return NotFound(new { message = "Usuário não encontrado" });
             }
 
-            var user = new UserDTO(userFound.Id, userFound.UserName, userFound.Email);
+            var user = new UserDTO(userFound.Id, userFound.UserName, userFound.Email, userFound.Tenancy);
             if(this.User.FindFirst(ClaimTypes.Role).Value.Contains("Admin")) {
                 user.Roles = new List<string>(await UserManager.GetRolesAsync(userFound));
             }
@@ -160,7 +160,7 @@ namespace GemaGestor.Controllers
             if(user.TwoFactorEnabled) {
                 return Accepted(new { message = "Necessária confirmação 2FA" });
             }
-            UserDTO userResponse = new UserDTO(user.Id, user.UserName, user.Email);
+            UserDTO userResponse = new UserDTO(user.Id, user.UserName, user.Email, user.Tenancy);
             userResponse.Roles = new List<string>(await UserManager.GetRolesAsync(user));
             return Ok(JwtService.IsLongTermToken() ?
                 new { message = "Usuário logado com sucesso",user = userResponse, token = JwtService.GenerateJWT(user, await UserManager.GetRolesAsync(user)), longtermtoken = JwtService.GenerateJWT(user, await UserManager.GetRolesAsync(user), 1440) } :
@@ -198,7 +198,7 @@ namespace GemaGestor.Controllers
         [SwaggerResponse(401, "Unauthorized Access.")]
         public async Task<IActionResult> RefreshToken() {
             var user = await UserManager.FindByNameAsync(this.User.FindFirst(ClaimTypes.Name).Value);
-            UserDTO userResponse = new UserDTO(user.Id, user.UserName, user.Email);
+            UserDTO userResponse = new UserDTO(user.Id, user.UserName, user.Email, user.Tenancy);
             userResponse.Roles = new List<string>(await UserManager.GetRolesAsync(user));
             return Ok(JwtService.IsLongTermToken() ?
                 new { message = "Usuário logado com sucesso", token = JwtService.GenerateJWT(user, await UserManager.GetRolesAsync(user)), longtermtoken = JwtService.GenerateJWT(user, await UserManager.GetRolesAsync(user), 1440) } :
@@ -214,7 +214,7 @@ namespace GemaGestor.Controllers
         public async Task<IActionResult> Me() {
             var user = await UserManager.FindByNameAsync(this.User.FindFirst(ClaimTypes.Name).Value);
             TimeSpan timeTillExpire = DateTimeOffset.FromUnixTimeSeconds(Convert.ToInt64(this.User.FindFirst("exp").Value)).LocalDateTime - DateTime.Now;
-            UserDTO userResponse = new UserDTO(user.Id, user.UserName, user.Email);
+            UserDTO userResponse = new UserDTO(user.Id, user.UserName, user.Email, user.Tenancy);
             userResponse.Roles = new List<string>(await UserManager.GetRolesAsync(user));
             return Ok(new { message = "Usuário recuperado", usuario = userResponse, timeTillExpire = timeTillExpire.TotalSeconds });
         }
@@ -372,7 +372,7 @@ namespace GemaGestor.Controllers
             //var usersTmp = from u in _context.Users where EF.Functions.ILike(u.UserName, $"%{userName}%") select u;
             List<UserDTO> users = new List<UserDTO>();
             foreach(var user in tenancyUsers) {
-                UserDTO tempUser = new UserDTO(user.Id, user.UserName, user.Email);
+                UserDTO tempUser = new UserDTO(user.Id, user.UserName, user.Email, user.Tenancy);
                 tempUser.Roles = new List<string>(await UserManager.GetRolesAsync(user));
                 users.Add(tempUser);
             }

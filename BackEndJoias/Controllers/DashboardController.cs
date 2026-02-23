@@ -18,12 +18,12 @@ namespace GemaGestor.Controllers {
             _context = context;
             _userManager = userManager;
         }
-        [HttpGet("Resumo")]
+        [HttpGet("resumo")]
         public async Task<ActionResult<DashboardResumoDTO>> GetResumo() {
             //1.Buscando o usuário logado e sua empresa (tenancy)
             User loggedUser = _context.User.Where(u => u.UserName == this.User
                                           .FindFirst(ClaimTypes.Name).Value)
-                                           .Include(u => u.Tenancy).First<User>();
+                                          .Include(u => u.Tenancy).First<User>();
             //Validando se o usuário tem empresa vinculada
             if (loggedUser.Tenancy == null) {
                 return BadRequest("Usuário sem empresa vinculada.");
