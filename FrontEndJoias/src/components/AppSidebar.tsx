@@ -26,7 +26,7 @@ const items = [
   { title: "Visão Geral", url: "/dashboard", icon: Home },
   { title: "Pedras Brutas", url: "/dashboard/pedras-brutas", icon: Gem },
   { title: "Meus Lotes", url: "/dashboard/lotes", icon: Layers },
-  { title: "Financeiro", url: "/dashboard/financeiro", icon: DollarSign },
+  // { title: "Financeiro", url: "/dashboard/financeiro", icon: DollarSign },
 ]
 
 export function AppSidebar() {

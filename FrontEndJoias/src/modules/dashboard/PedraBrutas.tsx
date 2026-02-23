@@ -1,19 +1,19 @@
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { useAuth } from "@/providers/AuthContext";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Plus, Gem, Trash2 } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Skeleton } from "@/components/ui/skeleton";
-import { useAuth } from "@/providers/AuthContext";
-import axios from "axios";
-import { Gem, Plus, Trash2 } from "lucide-react";
-import { useEffect, useState } from "react";
 
 interface PedraBruta {
   id: number;
   nome: string;
   peso: number;
-  valorInicial: number
-  dataAquisicao: string //Refatorar aqui e no back para receber uma data pelo usuario ao inves de definir
+  valorInicial: number;
+  dataAquisicao: string;
   regiao: string;
 }
 
@@ -34,13 +34,11 @@ export function PedrasBrutas() {
 
   const fetchPedras = () => {
     if (!token) return;
-    console.log("Atualizando Pedras")
+
     axios.get(`${import.meta.env.VITE_APP_API_HOST}/Brutas`, {
       headers: { Authorization: `Bearer ${token}` }
-
     })
       .then((response) => {
-        // Back-end pode devolver um array direto ou um objeto, ajustadado aqui
         setPedras(response.data);
         setLoading(false);
       })
@@ -48,27 +46,30 @@ export function PedrasBrutas() {
         console.error("Erro ao buscar pedras brutas:", error);
         setLoading(false);
       });
-  }
+  };
+
   useEffect(() => {
     fetchPedras();
-  }, []);
+  }, [token]);
 
   const handleCreate = (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Adaptando o payload para os formatos exatos que o C# exige
     const payload = {
       ...formData,
       peso: parseFloat(formData.peso),
-      valorInicial: parseFloat(formData.valorInicial)
+      valorInicial: parseFloat(formData.valorInicial),
+      // O seu truque genial para a data!
+      dataAquisicao: formData.dataAquisicao + "T00:00:00Z" 
     };
-    payload.dataAquisicao += "T00:00:00Z"
 
     axios.post(`${import.meta.env.VITE_APP_API_HOST}/Brutas`, payload, {
       headers: { Authorization: `Bearer ${token}` }
     })
-    .then(() => {
-        window.location.reload()
-        setIsDialogOpen(false); // Fecha o Dialog ao invés da Gaveta
+      .then(() => {
+        setIsDialogOpen(false);
+        fetchPedras(); // Recarrega a tabela imediatamente!
         setFormData({ nome: "", peso: "", valorInicial: "", descricao: "", regiao: "", dataAquisicao: new Date().toISOString().split('T')[0] });
       })
       .catch((error) => {
@@ -77,6 +78,22 @@ export function PedrasBrutas() {
       });
   };
 
+  const handleDelete = (id: number) => {
+    if (!window.confirm("Tem certeza que deseja excluir esta pedra? Essa ação não pode ser desfeita.")) {
+      return; 
+    }
+
+    axios.delete(`${import.meta.env.VITE_APP_API_HOST}/Brutas/${id}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+      .then(() => {
+        fetchPedras(); 
+      })
+      .catch((error) => {
+        console.error("Erro ao excluir pedra:", error);
+        alert("Não foi possível excluir a pedra.");
+      });
+  };
 
   const formatCurrency = (value: number) =>
     new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
@@ -89,21 +106,22 @@ export function PedrasBrutas() {
 
   return (
     <div className="-space-y-6">
-      {/* Cabeçalho da tela */}
+      {/* Cabeçalho */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className=" text-2xl font-bold dark:text-white text-gray-900 flex items-center gap-2 mb-4">
+          <h2 className="text-2xl font-bold dark:text-white text-gray-900 flex items-center gap-2 mb-4">
             <Gem className="text-purple-500" /> Estoque de Pedras Brutas
           </h2>
         </div>
+        
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
-            <Button className="bg-purple-600 hover:bg-purple-700 text-white gap-2 cursor-pointer mr-18">
+            <Button className="bg-purple-600 hover:bg-purple-700 text-white gap-2 cursor-pointer mr-4">
               <Plus size={18} /> Nova Pedra
             </Button>
           </DialogTrigger>
 
-          {/* Conteúdo do Modal centralizado */}
+          {/* Modal de Cadastro */}
           <DialogContent className="sm:max-w-md dark:bg-gray-900 border dark:border-gray-800">
             <DialogHeader>
               <DialogTitle className="dark:text-white">Cadastrar Nova Pedra</DialogTitle>
@@ -166,9 +184,9 @@ export function PedrasBrutas() {
                 <th className="px-6 py-4">Nome</th>
                 <th className="px-6 py-4">Região</th>
                 <th className="px-6 py-4">Data Aquisição</th>
-                <th className="px-6 py-4">Peso</th>
-                <th className="px-6 py-4">Valor Pago</th>
-                <th className="px-6 py-4">Ações</th>
+                <th className="px-6 py-4 text-right">Peso</th>
+                <th className="px-6 py-4 text-right">Valor Pago</th>
+                <th className="px-6 py-4 text-center">Ações</th>
               </tr>
             </thead>
             <tbody>
@@ -182,7 +200,6 @@ export function PedrasBrutas() {
                     <td className="px-6 py-4 text-right"><Skeleton className="h-4 w-20 ml-auto" /></td>
                     <td className="px-6 py-4"><Skeleton className="h-6 w-6 rounded mx-auto" /></td>
                   </tr>
-
                 ))
               ) : pedras.length === 0 ? (
                 <tr>
@@ -191,7 +208,6 @@ export function PedrasBrutas() {
                   </td>
                 </tr>
               ) : (
-                // Linhas reais da tabela
                 pedras.map((pedra) => (
                   <tr key={pedra.id} className="border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
                     <td className="px-6 py-4 font-medium text-gray-900 dark:text-white">
@@ -206,7 +222,7 @@ export function PedrasBrutas() {
                       {formatCurrency(pedra.valorInicial)}
                     </td>
                     <td className="px-6 py-4 text-center">
-                      <Button variant="ghost" size="icon" className="text-red-500 hover:text-red-700 hover:bg-red-100 dark:hover:bg-red-900/30">
+                      <Button variant="ghost" size="icon" onClick={() => handleDelete(pedra.id)} className="text-red-500 hover:text-red-700 hover:bg-red-100 dark:hover:bg-red-900/30 cursor-pointer">
                         <Trash2 size={18} />
                       </Button>
                     </td>

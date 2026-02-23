@@ -9,7 +9,7 @@ import { TenancyCreate } from './modules/dashboard/TenancyCreate';
 import { Overview } from './modules/dashboard/Overview';
 import { PedrasBrutas } from './modules/dashboard/PedraBrutas';
 import { Lotes } from './modules/dashboard/Lotes';
-import { Financeiro } from './modules/dashboard/Financeiro';
+//import { Financeiro } from './modules/dashboard/Financeiro';
 
 function App() {
   return (
@@ -26,7 +26,7 @@ function App() {
                 {/* Rotas filhas */}
                 <Route path='pedras-brutas' element={<PedrasBrutas />} />
                 <Route path='lotes' element={<Lotes />} />
-                <Route path='financeiro' element={<Financeiro/>} />
+                {/* <Route path='financeiro' element={<Financeiro/>} /> */}
               </Route>
             </Route>
             <Route element={<PrivateRoute hasRoles={["Admin"]} />}>
