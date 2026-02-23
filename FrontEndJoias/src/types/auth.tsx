@@ -11,6 +11,7 @@ export type Tenancy = {
   cnpj: string;
 }
 
+
 export type AuthContextType = {
   user: User | null;
   token: string | null;

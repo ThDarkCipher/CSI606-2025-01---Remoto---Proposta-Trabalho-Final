@@ -7,6 +7,7 @@ import { AuthProvider } from './providers/AuthContext';
 import PrivateRoute from './providers/PrivateRoute';
 import { TenancyCreate } from './modules/dashboard/TenancyCreate';
 import { Overview } from './modules/dashboard/Overview';
+import { PedrasBrutas } from './modules/dashboard/PedraBrutas';
 
 function App() {
   return (
@@ -21,7 +22,7 @@ function App() {
               <Route path='/dashboard' element={<Dashboard />} >
                 <Route index element={<Overview />} />
                 {/* Rotas filhas */}
-                <Route path='pedras-brutas' element={<div>💎 Tela de Pedras Brutas (Tabela vai aqui)</div>} />
+                <Route path='pedras-brutas' element={<PedrasBrutas />} />
                 <Route path='lotes' element={<div>📦 Tela de Lotes (Cards vão aqui)</div>} />
                 <Route path='financeiro' element={<div>💰 Tela do Financeiro</div>} />
               </Route>

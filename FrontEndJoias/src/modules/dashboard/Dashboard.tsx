@@ -7,11 +7,11 @@ import ThemeSelector from "@/components/theme/ThemeSelector";
 export const Dashboard = () => {
   //const { user } = useAuth();
   return (
-    <div className="flex min-h-screen w-full items-center justify-center dark:bg-gray-900 bg-gray-100 text-white">
+    <>
       <SidebarOutlet />
-      <div className="fixed top-4 right-4" >
+      <div className="fixed top-4 right-4 z-50" >
         <ThemeSelector />
       </div>
-    </div>
+    </>
   );
 };
