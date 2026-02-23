@@ -6,7 +6,7 @@ import { Dashboard } from './modules/dashboard/Dashboard';
 import { AuthProvider } from './providers/AuthContext';
 import PrivateRoute from './providers/PrivateRoute';
 import { TenancyCreate } from './modules/dashboard/TenancyCreate';
-import { Overview } from './modules/Overview';
+import { Overview } from './modules/dashboard/Overview';
 
 function App() {
   return (
