@@ -45,8 +45,9 @@ namespace GemaGestor.Controllers {
                                             .GroupBy(b => 1)
                                             .Select(g => new {
                                                 Qtd = g.Count(),
-                                                PesoTotal = g.Sum(b => b.Peso)
-                                             })
+                                                PesoTotal = g.Sum(b => b.Peso),
+                                                ValorTotal = g.Sum(b => b.ValorInicial)
+                                            })
                                             .FirstOrDefaultAsync();
             // 4. Monta e Retorna o DTO
             var dashboard = new DashboardResumoDTO {
@@ -54,7 +55,7 @@ namespace GemaGestor.Controllers {
 
                 // Se dadosLotes for null (banco vazio), usa 0
                 TotalLotes = dadosLotes?.Qtd ?? 0,
-                ValorTotalInvestido = dadosLotes?.TotalInvestido ?? 0,
+                ValorTotalInvestido = (dadosLotes?.TotalInvestido ?? 0) + (dadosPedras?.ValorTotal ?? 0),
 
                 // Se dadosPedras for null, usa 0
                 TotalPedras = dadosPedras?.Qtd ?? 0,

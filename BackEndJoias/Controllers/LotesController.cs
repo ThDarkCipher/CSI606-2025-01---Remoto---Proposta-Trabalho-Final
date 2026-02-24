@@ -40,13 +40,9 @@ namespace GemaGestor.Controllers {
                 DataAquisicao = dto.DataAquisicao,
 
                 // Financeiro
-                ValorInicial = dto.CustoTotal, // O Custo Total vira o Valor Inicial
-                ValorFinal = dto.CustoTotal,   // Inicialmente vale o que custou
                 ValorDeTrabalho = 0,
 
-                // Físico
-                Peso = dto.PesoTotal,
-                Quantidade = dto.QuantidadeDePedras,
+
 
                 // Vínculos (Segurança)
                 Tenancy = loggedUser.Tenancy!,
@@ -73,6 +69,7 @@ namespace GemaGestor.Controllers {
 
             return await _context.Lotes
                                  .Include(l => l.Tenancy)
+                                 .Include(l => l.Pedras)
                                  .Where(l => l.Tenancy.Id == loggedUser.Tenancy.Id)
                                  .ToListAsync();
         }
@@ -101,6 +98,31 @@ namespace GemaGestor.Controllers {
             return Ok(new { message = "Lote encontrado", lote = lote });
         }
 
+        [HttpGet("pedras/{id}")]
+        public async Task<IActionResult> GetPedras(long id) {
+            User loggedUser = _context.User.Where(u => u.UserName == this.User
+                                          .FindFirst(ClaimTypes.Name).Value)
+                                          .Include(u => u.Tenancy).First<User>();
+
+            var loteQuery = _context.Lotes.Where(l => l.Id == id)
+                                          .Include(l => l.Tenancy)
+                                          .Include(l =>l.Pedras);
+
+            // Verificação de existência
+            if (!loteQuery.Any()) {
+                return NotFound(new { message = "Lote não encontrado" });
+            }
+
+            var lote = loteQuery.First();
+
+            // Verificação de Segurança (Tenancy)
+            if (lote.Tenancy.Id != loggedUser.Tenancy.Id) {
+                return NotFound(new { message = "Lote não encontrada" }); // Finge que não existe pra quem não é dono
+            }
+            return Ok(new { message = "Lote encontrado", lotePedras = lote.Pedras });
+
+        }
+
         // 4- Deletar (DELETE)
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteLote(long id) {
@@ -124,6 +146,35 @@ namespace GemaGestor.Controllers {
             await _context.SaveChangesAsync();
 
             return NoContent();
+        }
+        [HttpPost("adicionar-pedra/{id}")]
+        //trocar pra id
+        public async Task<IActionResult> AdicionarPedraAoLote(long id, long pedraId) {
+            User loggedUser = _context.User.Where(u => u.UserName == this.User //trocar pra id
+                                           .FindFirst(ClaimTypes.Name).Value)
+                                           .Include(u => u.Tenancy).First<User>();
+            var loteQuery = _context.Lotes.Where(l => l.Id == id).Include(l => l.Tenancy);
+            if (!loteQuery.Any()) {
+                return NotFound(new { message = "Lote não encontrado" });
+            }
+            var lote = loteQuery.First();
+            if (lote.Tenancy.Id != loggedUser.Tenancy!.Id) {
+                return Forbid();
+            }
+            //ferificar depois se vai funcionar pros outros estagios da pedra, se não tiver problema, pode ser só isso mesmo
+            var pedraQuery = _context.Bruta.Where(p => p.Id == pedraId).Include(p => p.Tenancy);
+            if (!pedraQuery.Any()) {
+                return NotFound(new { message = "Pedra não encontrada" });
+            }
+            var pedra = pedraQuery.First();
+            if (pedra.Tenancy.Id != loggedUser.Tenancy.Id) {
+                return Forbid();
+            }
+            // Vincular a pedra ao lote
+            lote.Pedras.Add(pedra);
+            await _context.SaveChangesAsync();
+            return Ok(new { message = "Pedra adicionada ao lote com sucesso", lote });
+
         }
     }
 }

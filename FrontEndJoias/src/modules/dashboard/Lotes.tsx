@@ -104,10 +104,12 @@ export function Lotes() {
       });
   };
 
-  const handleLink = (id: number) => {
+  const handleLink = (id: number, e: React.FormEvent) => {
+    e.preventDefault();
     axios.post(`${import.meta.env.VITE_APP_API_HOST}/Lotes/adicionar-pedra/${id}?pedraId=${pedraId}`, {}, {
       headers: { Authorization: `Bearer ${token}` }
     })
+    setIsLinkDialogOpen(false);
   }
 
   const handlePedra = (id: number) => {
@@ -239,7 +241,7 @@ export function Lotes() {
 
 
 
-                          <form onSubmit={() => handleLink(lote.id)} className="space-y-4 mt-4">
+                          <form onSubmit={(e) => handleLink(lote.id, e)} className="space-y-4 mt-4">
                             <div className="space-y-2">
                               <Label htmlFor="pedraid" className="dark:text-gray-300">ID da Pedra</Label>
                               <Input id="pedraid" type="number" step="1" required value={pedraId} onChange={(e) => setPedraId(e.target.value)} placeholder="0" className="dark:bg-gray-800 dark:border-gray-700 dark:text-white" />
